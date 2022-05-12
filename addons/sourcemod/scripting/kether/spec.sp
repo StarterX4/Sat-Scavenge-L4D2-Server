@@ -104,7 +104,7 @@ public VoteActionHandler(Handle:vote, BuiltinVoteAction:action, param1, param2)
 	}
 }
 
-public SpecVoteResultHandler(Handle:vote, num_votes, num_clients, const client_info[][2], num_items, const item_info[][2])
+public void SpecVoteResultHandler(Handle vote, int num_votes, int num_clients, const int[][] client_info, int num_items, const int[][] item_info)
 {
 	for (new i=0; i<num_items; i++)
 	{

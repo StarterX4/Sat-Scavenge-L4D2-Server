@@ -282,6 +282,12 @@ public Action:MixVotingSuccess(Handle:timer)
     return Plugin_Handled;
 }
 
+stock bool IsPlayer(int client)
+{
+	int team = GetClientTeam(client);
+	return (team == L4D2Team_Survivor || team == L4D2Team_Infected);
+}
+
 public Action Cmd_MixStart(int client, int args)
 {
     if (currentState != STATE_NO_MIX) {

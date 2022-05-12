@@ -32,12 +32,12 @@
 		{
 			"Weapon_ShootPosition"
 			{
-				"windows"    "285" // was 284
-				"linux"        "286" // was 285
-				"mac"        "286" // was 285
+				"windows"	"285"
+				"linux"		"286"
+				"mac"		"286"
 			}
 		}
-	} 
+	}
 
 	"tf"
 	{
