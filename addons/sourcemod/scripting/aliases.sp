@@ -109,7 +109,6 @@ public void delayAllowReady(int client){
 	DataPack pack;
 	CreateDataTimer(3.0, AllowReady, pack);
 	pack.WriteCell(client);
-	pack.WriteString("Welcome to the server!");
 }
 
 public Action AllowReady(Handle timer, DataPack pack)
@@ -118,5 +117,5 @@ public Action AllowReady(Handle timer, DataPack pack)
 	pack.Reset();
 	client = pack.ReadCell();
 	canReady[client] = true;
-	CloseHandle(timer);
+	return Plugin_Continue;
 }

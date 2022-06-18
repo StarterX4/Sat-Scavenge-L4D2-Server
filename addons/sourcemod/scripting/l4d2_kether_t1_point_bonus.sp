@@ -12,11 +12,14 @@
 new iTeamSize;
 new Handle:hCvarValveSurvivalBonus;
 
+float fSurvivorBonus[2];
+int iSurvivorsAlive[2];
+
 public Plugin:myinfo =
 {
 	name = "L4D2 Bonus For pills",
 	author = "Krevik",
-	description = "Gives score bonuses pills, adrenaline and HP",
+	description = "Gives score bonuses for pills, adrenaline and HP",
 	version = "1.0.0",
 	url = "krevik.github.io/kether/"
 };
@@ -24,15 +27,70 @@ public Plugin:myinfo =
 public OnPluginStart()
 {
 	RegConsoleCmd("sm_bonus", CMD_print_bonuses, "Let's print those bonuses");
+	RegConsoleCmd("sm_bonusinfo", CMD_print_bonus_info, "Let's print those bonuses info.");
+	RegConsoleCmd("sm_binfo", CMD_print_bonus_info, "Let's print those bonuses info.");
+	RegConsoleCmd("sm_minfo", CMD_print_bonus_info, "Let's print those bonuses info.");
+	RegConsoleCmd("sm_mapinfo", CMD_print_bonus_info, "Let's print those bonuses info.");
+
 	hCvarValveSurvivalBonus = FindConVar("vs_survival_bonus");
 	iTeamSize = GetConVarInt(FindConVar("survivor_limit"));
+
+
+
 }
 
 public Action:CMD_print_bonuses(client, args)
 {
-	CPrintToChat(client, "[{green}Point Bonus{default}] Full HP Survivor bonus for the map: {green}%d", RoundToNearest(GetMaximumBonusPerSurvivor()));	
-	CPrintToChat(client, "[{green}Point Bonus{default}] Bonus for 1 medkit for the map: {green}%d", RoundToNearest(GetBonusForMedkit()));	
-	CPrintToChat(client, "[{green}Point Bonus{default}] Bonus for 1 pills/adrenaline for the map: {green}%d", RoundToNearest(GetBonusForPillsAdrenaline()));	
+	bool isTankInPlay = IsTankInPlay();
+	new team = InSecondHalfOfRound();
+	if(isTankInPlay){
+		CPrintToChat(client, "[{green}Point Bonus{default}] Tank Is in Play. Cannot calculate the bonus when tank is alive.");	
+	}else{
+		if(team == 0){
+				int actualBonus = GetActualBonusPerAliveSurvivor();
+				int aliveSurvivors = GetAliveSurvivors();
+				int totalBonus = actualBonus*aliveSurvivors;
+				if(actualBonus > 0){
+					CPrintToChat(client, "{blue}Team 1{default}: [{green}Point Bonus{default}] Current Point Bonus: {green}%d", totalBonus );	
+				}
+		}else{
+			if( RoundToNearest(fSurvivorBonus[0]) > 0 && iSurvivorsAlive[0] > 0){
+				int finalBonus = RoundToNearest(fSurvivorBonus[0] * float(iSurvivorsAlive[0]) );
+				CPrintToChat(client, "{blue}Team 1{default}: [{green}Point Bonus{default}] Point Bonus: {green}%d", finalBonus );	
+			}else{
+				CPrintToChat(client, "{blue}Team 1{default}: [{green}Point Bonus{default}] Point Bonus: {green}0" );	
+			}
+
+			if( RoundToNearest(fSurvivorBonus[1]) > 0 && iSurvivorsAlive[1] > 0){
+				int finalBonus = RoundToNearest(fSurvivorBonus[1] * float(iSurvivorsAlive[1]) );
+				CPrintToChat(client, "{blue}Team 2{default}: [{green}Point Bonus{default}] Point Bonus: {green}%d", finalBonus );
+			}else{
+				int actualBonus = GetActualBonusPerAliveSurvivor();
+				int aliveSurvivors = GetAliveSurvivors();
+				int totalBonus = actualBonus*aliveSurvivors;
+				if(actualBonus > 0){
+					CPrintToChat(client, "{blue}Team 2{default}: [{green}Point Bonus{default}] Current Point Bonus: {green}%d", totalBonus );	
+				}else{
+					CPrintToChat(client, "{blue}Team 2{default}: [{green}Point Bonus{default}] Point Bonus: {green}0" );	
+				}
+			}
+
+		}
+	}
+
+	return Plugin_Handled;
+}
+
+public Action:CMD_print_bonus_info(client, args)
+{
+	bool isTankInPlay = IsTankInPlay();
+	if(isTankInPlay){
+		CPrintToChat(client, "[{green}Point Bonus{default}] Tank Is in Play. Cannot show the bonus, while tank is in play.");	
+	}else{
+		CPrintToChat(client, "[{green}Point Bonus{default}] Full HP Survivor bonus for the map: {green}%d", RoundToNearest(GetMaximumBonusPerSurvivor()));	
+		CPrintToChat(client, "[{green}Point Bonus{default}] Bonus for 1 medkit for the map: {green}%d", RoundToNearest(GetBonusForMedkit()));	
+		CPrintToChat(client, "[{green}Point Bonus{default}] Bonus for 1 pills/adrenaline for the map: {green}%d", RoundToNearest(GetBonusForPillsAdrenaline()));	
+	}
 
 	return Plugin_Handled;
 }
@@ -42,74 +100,117 @@ public OnPluginEnd()
 	ResetConVar(hCvarValveSurvivalBonus);
 }
 
-public Action:L4D2_OnEndVersusModeRound(bool:countSurvivors)
-{
-	CreateTimer(0.1, printDelayedBonus);
-	return Plugin_Continue;
+
+int GetActualBonusPerAliveSurvivor(){
+	new iSurvivalMultiplier = GetAliveSurvivors();
+	new medkitsCount = RoundToNearest(countMedkitsForAlive());
+	new pillsCount = RoundToNearest(countPillsAndAdrenalineForAlive());
+	float bonusForHP = GetTotalHealthBonusForAlive();
+	
+	float totalBonus = bonusForHP + ((GetBonusForMedkit()*medkitsCount) + (GetBonusForPillsAdrenaline()*pillsCount));
+	return RoundToNearest( totalBonus/float(iSurvivalMultiplier) );
 }
 
-public Action printDelayedBonus(Handle timer)
+public Action:L4D2_OnEndVersusModeRound(bool:countSurvivors)
 {
+	new team = InSecondHalfOfRound();
 	new iSurvivalMultiplier = GetUprightSurvivors();
 	new medkitsCount = RoundToNearest(countMedkits());
 	new pillsCount = RoundToNearest(countPillsAndAdrenaline());
-	new bonusForHP = GetTotalHealthBonus();
+	float bonusForHP = GetTotalHealthBonus();
 	
-	
-	new totalBonus = bonusForHP + ( (GetBonusForMedkit()*medkitsCount) + (GetBonusForPillsAdrenaline()*pillsCount) );
-	
-	if(iSurvivalMultiplier>0){
-		CPrintToChatAll("[{green}Point Bonus{default}] {green}%d{default} survivors reached safehouse with {green}%d{default} {blue}medkits{default}", iSurvivalMultiplier, medkitsCount );
-		CPrintToChatAll("[{green}Point Bonus{default}] Total bonus for {blue}HP: {green}%d{default}x{green}%d ", iSurvivalMultiplier, bonusForHP/iSurvivalMultiplier );
-		CPrintToChatAll("[{green}Point Bonus{default}] Total bonus for {blue}Medkits: {green}%d{default}x{green}%d", medkitsCount, RoundToNearest(GetBonusForMedkit()) );
-		CPrintToChatAll("[{green}Point Bonus{default}] Total bonus for {blue}Pills/Adrenaline: {green}%d{default}x{green}%d", pillsCount, RoundToNearest(GetBonusForPillsAdrenaline()) );
-		CPrintToChatAll("[{green}Point Bonus{default}] Total bonus: {green}%d{default}x{green}%d", iSurvivalMultiplier, RoundToNearest(RoundToNearest(totalBonus)/float(iSurvivalMultiplier)) );
+	float totalBonus = bonusForHP + ((GetBonusForMedkit()*medkitsCount) + (GetBonusForPillsAdrenaline()*pillsCount));
 
-		SetConVarInt(hCvarValveSurvivalBonus, RoundToNearest(RoundToNearest(totalBonus)/float(iSurvivalMultiplier)) );
-	}else{
-		SetConVarInt(hCvarValveSurvivalBonus, RoundToNearest(0));
+	fSurvivorBonus[team] = totalBonus/float(iSurvivalMultiplier);
+	if(iSurvivalMultiplier == 0){
+		fSurvivorBonus[team] = 0.0;
 	}
+	iSurvivorsAlive[team] = iSurvivalMultiplier;
+	SetConVarInt(hCvarValveSurvivalBonus, RoundToNearest(fSurvivorBonus[team]) );
+	CreateTimer(3.5, PrintRoundEndStats, _, TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Continue;
 }
 
-Float:GetMapDistanceMultiplier(){
-	return float(GetMapMaxScore())/500.0;
+public Action PrintRoundEndStats(Handle timer) {
+	new team = InSecondHalfOfRound();
+	new iSurvivalMultiplier = GetUprightSurvivors();
+	if(team == 0){
+		if(RoundToNearest(fSurvivorBonus[team])>0 && iSurvivorsAlive[team] > 0){
+			CPrintToChatAll("[{green}Point Bonus{default}] Total bonus: {green}%d{default}x{green}%d", iSurvivalMultiplier, RoundToNearest(fSurvivorBonus[team]) );
+		}
+	}else{
+		if(RoundToNearest(fSurvivorBonus[0])>0  && iSurvivorsAlive[0] > 0){
+			CPrintToChatAll("{blue}Team 1{default}: [{green}Point Bonus{default}] Total bonus: {green}%d{default}x{green}%d", iSurvivorsAlive[0], RoundToNearest(fSurvivorBonus[0]) );
+		}
+		if(RoundToNearest(fSurvivorBonus[1])>0  && iSurvivorsAlive[1] > 0){
+			CPrintToChatAll("{blue}Team 2{default}: [{green}Point Bonus{default}] Total bonus: {green}%d{default}x{green}%d", iSurvivalMultiplier, RoundToNearest(fSurvivorBonus[1]) );
+		}
+	}
+	if(team == 1 ){
+		fSurvivorBonus[0] = 0.0;
+		fSurvivorBonus[1] = 0.0;
+		iSurvivorsAlive[0] = 0;
+		iSurvivorsAlive[1] = 0;
+	}
+
+	return Plugin_Handled;
+}
+
+float GetMapDistanceMultiplier(){
+	return float(GetMapMaxScore())/400.0;
 }
 
 Float:GetMaximumBonusPerSurvivor(){
 	return (100.0/4.0)*GetMapDistanceMultiplier();				
 }
 
-Float:GetBonusForMedkit(){
-	return GetMaximumBonusPerSurvivor()*1.26;
+float GetBonusForMedkit(){
+	return GetMaximumBonusPerSurvivor()*1.4;
 }
 
-Float:GetBonusForPillsAdrenaline(){
-	return 8.0*GetMapDistanceMultiplier();
+float GetBonusForPillsAdrenaline(){
+	return 10.0*GetMapDistanceMultiplier();
 }
 
-Float:GetTotalHealthBonus(){
-	new Float:mapDistanceMultiplier = GetMapDistanceMultiplier();
+float GetTotalHealthBonus(){
+	float mapDistanceMultiplier = GetMapDistanceMultiplier();
 	new survivorCount;		
-	new Float:totalBonus = 0;
+	float totalBonus = 0.0;
 	for (new i = 1; i <= MaxClients && survivorCount < iTeamSize; i++)
 	{
 		if (IsSurvivor(i))
 		{
 			survivorCount++;
 			if (L4D_IsInLastCheckpoint(i))
-			{
-				new numberOfIncaps = GetSurvivorIncapCount(i);
-				new Float:incapsFactor = 1.0;
-				if(numberOfIncaps >= 1) {incapsFactor = 0.0;}
-				
-				new Float:bonusForPermHealth = GetSurvivorPermanentHealth(i)/4.0;				
-				new Float:totalBonusToAdd = (bonusForPermHealth)*mapDistanceMultiplier;
+			{	
+				float bonusForPermHealth = GetSurvivorPermanentHealth(i)/4.0;				
+				float totalBonusToAdd = (bonusForPermHealth)*mapDistanceMultiplier;
 				totalBonus = totalBonus + totalBonusToAdd;
 			}
 		}
 	}
-	return RoundToNearest(totalBonus);
+	return totalBonus;
+}
+
+float GetTotalHealthBonusForAlive(){
+	float mapDistanceMultiplier = GetMapDistanceMultiplier();
+	new survivorCount;		
+	float totalBonus = 0.0;
+	for (new i = 1; i <= MaxClients && survivorCount < iTeamSize; i++)
+	{
+		if (IsSurvivor(i))
+		{
+			survivorCount++;
+			if (IsPlayerAlive(i))
+			{	if(GetSurvivorPermanentHealth(i) < 100){
+					float bonusForPermHealth = GetSurvivorPermanentHealth(i)/4.0;				
+					float totalBonusToAdd = (bonusForPermHealth)*mapDistanceMultiplier;
+					totalBonus = totalBonus + totalBonusToAdd;
+				}
+			}
+		}
+	}
+	return totalBonus;
 }
 
 GetUprightSurvivors()
@@ -130,7 +231,25 @@ GetUprightSurvivors()
 	return aliveCount;
 }
 
-Float:countMedkits()
+GetAliveSurvivors()
+{
+	new aliveCount;
+	new survivorCount;
+	for (new i = 1; i <= MaxClients && survivorCount < iTeamSize; i++)
+	{
+		if (IsSurvivor(i))
+		{
+			survivorCount++;
+			if (IsPlayerAlive(i))
+			{
+					aliveCount++;
+			}
+		}
+	}
+	return aliveCount;
+}
+
+float countMedkits()
 {	
 	new survivorCount;		
 	new totalMedkits;
@@ -150,7 +269,27 @@ Float:countMedkits()
 	return float(totalMedkits);
 }
 
-Float:countPillsAndAdrenaline()
+float countMedkitsForAlive()
+{	
+	new survivorCount;		
+	new totalMedkits;
+	for (new i = 1; i <= MaxClients && survivorCount < iTeamSize; i++)
+	{
+		if (IsSurvivor(i))
+		{
+			survivorCount++;
+			if (IsPlayerAlive(i))
+			{
+				if(HasMedkit(i)){
+					totalMedkits += 1;
+				}
+			}
+		}
+	}
+	return float(totalMedkits);
+}
+
+float countPillsAndAdrenaline()
 {	
 	new survivorCount;		
 	new totalPills;
@@ -160,6 +299,26 @@ Float:countPillsAndAdrenaline()
 		{
 			survivorCount++;
 			if (L4D_IsInLastCheckpoint(i))
+			{
+				if(HasPills(i) || HasAdrenaline(i)){
+					totalPills += 1;
+				}
+			}
+		}
+	}
+	return float(totalPills);
+}
+
+float countPillsAndAdrenalineForAlive()
+{	
+	new survivorCount;		
+	new totalPills;
+	for (new i = 1; i <= MaxClients && survivorCount < iTeamSize; i++)
+	{
+		if (IsSurvivor(i))
+		{
+			survivorCount++;
+			if (IsPlayerAlive(i))
 			{
 				if(HasPills(i) || HasAdrenaline(i)){
 					totalPills += 1;
@@ -232,4 +391,27 @@ stock GetSurvivorIncapCount(client)
 stock GetMapMaxScore()
 {
 	return L4D_GetVersusMaxCompletionScore();
+}
+
+InSecondHalfOfRound()
+{
+	return GameRules_GetProp("m_bInSecondHalfOfRound");
+}
+
+bool IsTankInPlay()
+{
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsTank(i) && IsPlayerAlive(i)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool IsTank(int client)
+{
+	return (IsClientInGame(client)
+		&& GetClientTeam(client) == 3
+		&& GetEntProp(client, Prop_Send, "m_zombieClass") == 8);
 }
