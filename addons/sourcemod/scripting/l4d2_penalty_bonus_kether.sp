@@ -188,24 +188,6 @@ public Action Cmd_Bonus(int iClient, int iArgs)
 	return Plugin_Handled;
 }
 
-/*public Action Command_Say(int iClient, const char[] sCommand, int iArgs)
-{
-	if (!g_hCvarEnabled.BoolValue || !g_hCvarDoDisplay.BoolValue) {
-		return Plugin_Continue;
-	}
-
-	if (IsChatTrigger()) {
-		char sMessage[MAX_NAME_LENGTH];
-		GetCmdArg(1, sMessage, sizeof(sMessage));
-
-		if (strcmp(sMessage, "!bonus") == 0 || strcmp(sMessage, "!sm_bonus") == 0) {
-			return Plugin_Handled;
-		}
-	}
-
-	return Plugin_Continue;
-}*/
-
 // Tank and Witch tracking
 // -----------------------
 
@@ -248,7 +230,29 @@ public void OnTankDeath()
 	ReportChange(iTankBonus);
 }
 
-public void OnWitch100BySurvivor()
+public void Kether_OnWitchDrawCrown(){
+	if (!g_hCvarEnabled.BoolValue) {
+		return;
+	}
+
+	int iWitchBonus = g_hCvarBonusWitch.IntValue;
+	if (iWitchBonus == 0 || g_bRoundOver[RoundNum()]) {
+		return;
+	}
+
+	g_iBonus[RoundNum()] += iWitchBonus;
+
+	if (g_bSetSameChange) {
+		g_iSameChange = iWitchBonus;
+	} else if (g_iSameChange != iWitchBonus) {
+		g_iSameChange = 0;
+		g_bSetSameChange = false;
+	}
+
+	ReportChange(iWitchBonus);
+}
+
+public void Kether_OnWitchCrown()
 {
 	if (!g_hCvarEnabled.BoolValue) {
 		return;
