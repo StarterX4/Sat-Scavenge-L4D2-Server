@@ -90,15 +90,12 @@ bool bSpecHudActive[MAXPLAYERS+1], bTankHudActive[MAXPLAYERS+1];
 bool bSpecHudHintShown[MAXPLAYERS+1], bTankHudHintShown[MAXPLAYERS+1];
 
 //extended tankhud cvars
-char Tank_UpTime[64];
+char Tank_UpTime[20];
 int UpTime;
-int punch_connected[MAXPLAYERS+1];
-int rock_connected[MAXPLAYERS+1];
-int prop_connected[MAXPLAYERS+1];
-int damage_connected[MAXPLAYERS+1];
-ArrayList whoHadTank;
-ArrayList timeAlive;
-ArrayList spawnTime;
+int punch_connected;
+int rock_connected;
+int prop_connected;
+int damage_connected;
 bool g_bIsTankInPlay = false;            // Whether or not the tank is active
 bool g_bAnnounceTankDamage = false;            // Whether or not tank damage should be announced
 /**********************************************************************************************/
@@ -145,9 +142,6 @@ public void OnPluginStart()
 	
 	hSpecHudViewers = new ArrayList();
 	hTankHudViewers = new ArrayList();
-	whoHadTank = new ArrayList();
-	timeAlive = new ArrayList();
-	spawnTime = new ArrayList();
 	
 	bPendingArrayRefresh = true;
 	g_bIsTankInPlay = false;
@@ -418,9 +412,10 @@ public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 	bRoundLive = false;
 	bPendingArrayRefresh = true;
 	UpTime = GetTime();
-	whoHadTank.Clear();
-	timeAlive.Clear();
-	spawnTime.Clear();
+	punch_connected = 0;
+	rock_connected = 0;
+	prop_connected = 0;
+	damage_connected = 0;
 }
 
 public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
@@ -442,25 +437,12 @@ public void OnTankDeath()
 public Action delayedTankStatsPrint(Handle timer)
 {
 	if(g_bAnnounceTankDamage){
-		int index = 0;
-		while(index < whoHadTank.Length){
-			int clientID = whoHadTank.Get(index);
-			char livingTime[64] = "";
-			int found = GetArrayString(timeAlive, index, livingTime, sizeof(livingTime));
-			if(found > 0){
-				int dmg = damage_connected[clientID];
-				int punches = punch_connected[clientID];
-				int rocks = rock_connected[clientID];
-				int props = prop_connected[clientID];
-				if(dmg > 0){
-					//TODO store steam names also instead of clientID because if client leaves the game after playing the tank, the name can be null or sth
-					CPrintToChatAll("[{darkred}Tank: {red}%N{default}] {orange}Time: {olive}%s {default}| {orange}DMG: {olive}%d {default}| {orange}Claw: {olive}%d {default}| {orange}Rock: {olive}%d {default}| {orange}Prop: {olive}%d", clientID, livingTime, dmg, punches, rocks, props);
-				}else{
-					//TODO store steam names also instead of clientID because if client leaves the game after playing the tank, the name can be null or sth
-					CPrintToChatAll("[{darkred}Tank: {red}%N{default}] {orange}Time: {olive}%s {default}", clientID, livingTime);
-				}
-			}				
-			index++;
+		UpdateTankUpTime();
+		if(damage_connected > 0.0){
+			CPrintToChatAll( "[{olive}Tank Report{default}] Time: {olive}%s{default} | Damage: {olive}%d{default}, with: {olive}%d{default} rocks, {olive}%d{default} punches, {olive}%d{default} object hits.", Tank_UpTime, damage_connected, rock_connected, punch_connected, prop_connected );
+		}
+		else{
+			CPrintToChatAll( "[{olive}Tank Report{default}] Tank was alive for a total time of: {olive}%s{default}.", Tank_UpTime );
 		}
 		g_bAnnounceTankDamage = false;
 		g_bIsTankInPlay = false;
@@ -477,67 +459,25 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
 	{
 		if (iTankCount > 0) iTankCount--;
 		if (!RoundHasFlowTank()) bFlowTankActive = false;
-		PushArrayString(timeAlive, Tank_UpTime);
 	}
 }
 
-// public void TP_OnTankPass(){
-// 	int client = FindTankClient(1);
-// 	if(client && IsClientInGame(client) && !IsFakeClient(client) && client > 0 && client < MAXPLAYERS+1){
-// 		whoHadTank.Push(client);
-// 		UpdateTankUpTime();
-// 		PushArrayString(timeAlive, Tank_UpTime);
-// 		spawnTime.Push(GetTime());
-// 	}
-// 	if (g_bIsTankInPlay){
-// 		UpTime = GetTime();
-// 		return; // Tank passed
-// 	} 
-// 	g_bAnnounceTankDamage = true;
-// 	// New tank, damage has not been announced
-// 	g_bIsTankInPlay = true;
-// }
-
-// public Action Event_TankSpawn(Handle event, const char[] name, bool dontBroadcast) {
-// 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-// 	if(client && IsClientInGame(client) && !IsFakeClient(client) && client > 0 && client < MAXPLAYERS+1){
-// 		whoHadTank.Push(client);
-// 		UpdateTankUpTime();
-// 		PushArrayString(timeAlive, Tank_UpTime);
-// 		spawnTime.Push(GetTime());
-// 	}
-// 	if (g_bIsTankInPlay){
-// 		PushArrayString(timeAlive, Tank_UpTime);
-// 		UpTime = GetTime();
-// 		return; // Tank passed
-// 	} 
-// 	g_bAnnounceTankDamage = true;
-// 	// New tank, damage has not been announced
-// 	g_bIsTankInPlay = true;
-// }
-
-
 public Action Event_TankSpawn(Handle event, const char[] name, bool dontBroadcast) {
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if(client && IsValidClient(client)){
-		whoHadTank.Push(client);
-	}
-	//tank passed
-	if (g_bIsTankInPlay) {
-		if(client && IsValidClient(client)){
-			PushArrayString(timeAlive, Tank_UpTime);
-		}
-		UpTime = GetTime();
-		return;
-	}
+	if (g_bIsTankInPlay) return; // Tank passed
+	UpTime = GetTime();
+	punch_connected = 0;
+	rock_connected = 0;
+	prop_connected = 0;
+	damage_connected = 0;
 	g_bAnnounceTankDamage = true;
+	// New tank, damage has not been announced
 	g_bIsTankInPlay = true;
 }
 
 public Action Event_PlayerHurt(Handle event, const char[] name, bool dontBroadcast) {
     int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
     int victim = GetClientOfUserId(GetEventInt(event, "userid"));
-	int dmg = GetEventInt(event, "dmg_health");
+
     if (!attacker) {
         return Plugin_Continue;
     }
@@ -549,13 +489,15 @@ public Action Event_PlayerHurt(Handle event, const char[] name, bool dontBroadca
     char weapon[16];
     GetEventString(event, "weapon", weapon, sizeof(weapon));
     if (GetEntProp(attacker, Prop_Send, "m_zombieClass") == 8 && GetClientTeam(victim) == 2) {
-		damage_connected[attacker] += dmg;
-		if (StrEqual(weapon, "tank_claw")) {
-			punch_connected[attacker] += 1;
-		} else if (StrEqual(weapon, "tank_rock")) {
-			rock_connected[attacker] += 1;
-		} else {
-			prop_connected[attacker] += 1;
+		damage_connected = damage_connected + GetEventInt(event, "dmg_health");
+		if(damage_connected > 1){
+			if (StrEqual(weapon, "tank_claw")) {
+				punch_connected = punch_connected + 1;
+			} else if (StrEqual(weapon, "tank_rock")) {
+				rock_connected = rock_connected + 1;
+			} else {
+				prop_connected = prop_connected + 1;
+			}
 		}
     }
 	
@@ -1247,9 +1189,9 @@ bool FillTankInfo(Panel &hSpecHud, bool bTankHUD = false)
 		int len = strlen(info);
 		for (int i = 0; i < len; ++i) info[i] = '_';
 		DrawPanelText(hSpecHud, info);
-		Format(info, sizeof(info), "Punches: %i | Rocks: %i | Objects: %i", punch_connected[tank], rock_connected[tank], prop_connected[tank]);
+		Format(info, sizeof(info), "Punches: %i | Rocks: %i | Objects: %i", punch_connected, rock_connected, prop_connected);
 		DrawPanelText(hSpecHud, info);
-		Format(info, sizeof(info), "Total Damage: %i", damage_connected[tank]);
+		Format(info, sizeof(info), "Total Damage: %i", damage_connected);
 		DrawPanelText(hSpecHud, info);
 	}
 	else
@@ -1611,10 +1553,4 @@ stock bool RoundHasFlowTank()
 stock bool RoundHasFlowWitch()
 {
 	return L4D2Direct_GetVSWitchToSpawnThisRound(InSecondHalfOfRound());
-}
-
-stock bool IsValidClient(int client)
-{ 
-    if (client <= 0 || client > MaxClients || !IsClientConnected(client) || !IsClientInGame(client)) return false; 
-    return true;
 }
