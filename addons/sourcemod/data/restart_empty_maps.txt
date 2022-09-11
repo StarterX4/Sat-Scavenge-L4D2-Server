@@ -8,43 +8,6 @@
 <
 < (you can remove all comments and unused maps)
 
-// CS:GO
-//
-ar_baggage
-ar_dizzy
-ar_lunacy
-ar_monastery
-ar_shoots
-coop_kasbah
-cs_agency
-cs_assault
-cs_italy
-cs_militia
-cs_office
-de_anubis
-de_bank
-de_cache
-de_canals
-de_cbble
-de_dust2
-de_inferno
-de_lake
-de_mirage
-de_mutiny
-de_nuke
-de_overpass
-de_safehouse
-de_shortdust
-de_shortnuke
-de_stmarc
-de_sugarcane
-de_train
-de_vertigo
-dz_blacksite
-dz_sirocco
-gd_cbble
-gd_rialto
-
 // Left 4 Dead 2
 //
 c1m1_hotel
@@ -61,12 +24,3 @@ c11m1_greenhouse
 C12m1_hilltop
 c13m1_alpinecreek
 c14m1_junkyard
-
-// Left 4 Dead 1
-//
-l4d_hospital01_apartment
-l4d_garage01_alleys
-l4d_smalltown01_caves
-l4d_airport01_greenhouse
-l4d_farm01_hilltop
-l4d_river01_docks

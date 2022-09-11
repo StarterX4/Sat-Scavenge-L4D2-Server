@@ -1,4 +1,4 @@
-#define PLUGIN_VERSION "2.2"
+#define PLUGIN_VERSION "2.5"
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -152,8 +152,11 @@ public void OnConfigsExecuted()
 		g_bServerStarted = true;
 		ChangeMap("Server is restarted");
 	}
-	g_iHybernateInitial = g_ConVarHibernate.IntValue;
-	g_ConVarHibernate.SetInt(0);
+	if( g_ConVarHibernate != null )
+	{
+		g_iHybernateInitial = g_ConVarHibernate.IntValue;
+		g_ConVarHibernate.SetInt(0);
+	}
 }
 
 public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBroadcast)
@@ -166,7 +169,10 @@ public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBr
 		{
 			if( IsRebootTimeAllowed() )
 			{
-				g_ConVarHibernate.SetInt(0);
+				if( g_ConVarHibernate != null )
+				{
+					g_ConVarHibernate.SetInt(0);
+				}
 				CreateTimer(g_fCvarDelay, Timer_CheckPlayers);
 				return Plugin_Continue;
 			}
@@ -246,6 +252,7 @@ public Action Timer_CheckPlayers(Handle timer, int UserId)
 	{
 		StartRebootSequence();
 	}
+	return Plugin_Continue;
 }
 
 void StartRebootSequence()
@@ -259,9 +266,10 @@ void StartRebootSequence()
 	CreateTimer(0.1, Timer_RestartServer);
 }
 
-Action Timer_RestartServer(Handle timer)
+public Action Timer_RestartServer(Handle timer)
 {
 	RestartServer();
+	return Plugin_Continue;
 }
 
 void RestartServer()
@@ -279,7 +287,10 @@ void RestartServer()
 		}
 		case 3: {
 			ChangeMap("Empty server");
-			CreateTimer(15.0, Timer_DoHybernate);
+			if( g_ConVarHibernate != null )
+			{
+				CreateTimer(15.0, Timer_DoHybernate);
+			}
 		}
 	}
 }
@@ -345,24 +356,24 @@ void KickAll()
 
 void UnloadPluginsExcludeMe()
 {
-	char buffer[64];
-	Handle pl;
-	Handle iter = GetPluginIterator();
+	char name[64];
+	Handle hPlugin;
+	Handle hIter = GetPluginIterator();
 	
-	if( iter )
+	if( hIter )
 	{
-		while( MorePlugins(iter) )
+		while( MorePlugins(hIter) )
 		{
-			pl = ReadPlugin(iter);
+			hPlugin = ReadPlugin(hIter);
 			
-			if( pl != hPluginMe )
+			if( hPlugin != hPluginMe && hPlugin != INVALID_HANDLE )
 			{
-				GetPluginFilename(pl, buffer, sizeof(buffer));
-				ServerCommand("sm plugins unload \"%s\"", buffer);
+				GetPluginFilename(hPlugin, name, sizeof(name));
+				ServerCommand("sm plugins unload \"%s\"", name);
 				ServerExecute();
 			}
 		}
-		CloseHandle(iter);
+		CloseHandle(hIter);
 	}
 }
 
@@ -381,6 +392,7 @@ public Action Timer_DoHybernate(Handle timer)
 	{
 		g_ConVarHibernate.SetInt(g_iHybernateInitial);
 	}
+	return Plugin_Continue;
 }
 
 bool RealPlayerExist(int iExclude = 0)
