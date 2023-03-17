@@ -1030,6 +1030,14 @@
 		"end_point"			"-8466.472656 7044.023438 -334.468750"
 		"end_dist"			"642.662781"
 		"max_distance"		"600"
+		"tank_ban_flow"
+		{
+			"1"
+			{
+				"min"		"75"
+				"max"		"100"
+			}
+		}
 	}
 	"l4d2_stadium5_stadium"
 	{
@@ -1999,7 +2007,7 @@
 			"Early spawn"
 			{
 				"min"		"0"
-				"max"		"34"
+				"max"		"36"
 			}
 		}
 	}
@@ -2015,7 +2023,7 @@
 			"Early spawn"
 			{
 				"min"		"0"
-				"max"		"24"
+				"max"		"26"
 			}
 		}
 	}
@@ -2031,7 +2039,7 @@
 			"Early spawn"
 			{
 				"min"		"0"
-				"max"		"24"
+				"max"		"26"
 			}
 		}
 	}
@@ -2049,6 +2057,11 @@
 				"min"		"0"
 				"max"		"20"
 			}
+			"Elevator"
+			{
+				"min"		"40"
+				"max"		"68"
+			}
 		}
 	}
 	"nmrm5_rooftop"
@@ -2060,7 +2073,7 @@
 		"end_dist"			"100.000000"
 		"ItemLimits"
 		{
-			"pain_pills"	"4"
+			"pain_pills"	"0"
 		}
 		"tank_ban_flow"
 		{
@@ -2071,7 +2084,7 @@
 			}
 			"Late spawn"
 			{
-				"min"		"80"
+				"min"		"76"
 				"max"		"100"
 			}
 		}
