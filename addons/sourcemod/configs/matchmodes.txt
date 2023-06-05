@@ -18,9 +18,17 @@
 		{
 			"name" "Kether Versus 8v8 T1"
 		}
+		"kether_campaign"
+		{
+			"name" "Kether Campaign"
+		}
 		"kether_test"
 		{
 			"name" "Kether Test"
+		}
+		"kether_versus_t1_foolsday"
+		{
+			"name" "Kether VerSus T1"
 		}
 	}
 	"Kether T2 Configs"
@@ -42,11 +50,11 @@
 	{
 		"zonemod"
 		{
-			"name" "ZoneMod 2.8.1"
+			"name" "ZoneMod 2.8.2"
 		}
 		"zoneretro"
 		{
-			"name" "ZoneMod Retro 2.8.1"
+			"name" "ZoneMod Retro 2.8.2"
 		}
 		"zm3v3"
 		{
@@ -143,7 +151,7 @@
 	{
 		"zonehunters"
 		{
-			"name" "ZoneHunters 2.8.1"
+			"name" "ZoneHunters 2.8.2"
 		}
 		"zh3v3"
 		{
