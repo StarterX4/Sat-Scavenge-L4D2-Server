@@ -46,15 +46,34 @@
 			"name" "Kether Versus T2 (backport; use with caution)"
 		}
 	}
+	"Kether Scavenge Configs"
+	{
+		"kether_scavenge_t2"
+		{
+			"name" "Kether Scavenge T2"
+		}
+		"kether_scavenge_t2_turbo"
+		{
+			"name" "Kether Scavenge T2 Turbo"
+		}
+		"kether_scavenge_t1"
+		{
+			"name" "Kether Scavenge T1"
+		}
+		"kether_scavenge_t1_turbo"
+		{
+			"name" "Kether Scavenge T1 Turbo"
+		}
+	}
 	"ZoneMod Configs"
 	{
 		"zonemod"
 		{
-			"name" "ZoneMod 2.8.2"
+			"name" "ZoneMod 2.8.9"
 		}
 		"zoneretro"
 		{
-			"name" "ZoneMod Retro 2.8.2"
+			"name" "ZoneMod Retro 2.8.9"
 		}
 		"zm3v3"
 		{
@@ -100,6 +119,10 @@
 		"pmelite"
 		{
 			"name" "Promod Elite 1.1"
+		}
+		"deadman"
+		{
+			"name" "Deadman 5.0.3"
 		}
 	}
 	"Acemod Revamped Configs"
@@ -151,7 +174,7 @@
 	{
 		"zonehunters"
 		{
-			"name" "ZoneHunters 2.8.2"
+			"name" "ZoneHunters 2.8.9"
 		}
 		"zh3v3"
 		{
@@ -164,6 +187,41 @@
 		"zh1v1"
 		{
 			"name" "1v1 ZoneHunters"
+		}
+	}
+	"ScavOgl Configs"
+	{
+		"scavogl"
+		{
+			"name" "ScavOgl Rework v2.2"
+		}
+		"scavhunters"
+		{
+			"name" "ScavHunters Rework v2.2"
+		}
+		"scav1v1"
+		{
+			"name" "1v1 ScavOgl v2.2"
+		}
+		"scav2v2"
+		{
+			"name" "2v2 ScavOgl v2.2"
+		}
+		"scav3v3"
+		{
+			"name" "3v3 ScavOgl v2.2"
+		}
+		"scavh1v1"
+		{
+			"name" "1v1 ScavHunters v2.2"
+		}
+		"scavh2v2"
+		{
+			"name" "2v2 ScavHunters v2.2"
+		}
+		"scavh3v3"
+		{
+			"name" "3v3 ScavHunters v2.2"
 		}
 	}
 }

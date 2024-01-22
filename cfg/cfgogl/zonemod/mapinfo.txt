@@ -13,15 +13,20 @@
 		"max_distance"		"400"
 		"tank_ban_flow"
 		{
-			"Before elevator exit"
-			{
-				"min"		"38"
-				"max"		"79"
-			}
-			"Early spawns"
+			"Instant spawns"
 			{
 				"min"		"0"
-				"max"		"24"
+				"max"		"25"
+			}
+			"Before elevator top, after elevator bottom"
+			{
+				"min"		"33"
+				"max"		"79"
+			}
+			"After kitchen"
+			{
+				"min"		"85"
+				"max"		"100"
 			}
 		}
 	}
@@ -137,6 +142,11 @@
 		"horde_limit"		"240"
 		"tank_ban_flow"
 		{
+			"One way drop"
+			{
+				"min"		"38"
+				"max"		"41"
+			}
 			"Coaster Start"
 			{
 				"min"		"56"
@@ -206,6 +216,14 @@
 		"start_extra_dist"	"200.000000"
 		"end_dist"			"200.000000"
 		"max_distance"		"500"
+		"tank_ban_flow"
+		{
+			"Late tanks"
+			{
+				"min"		"75"
+				"max"		"100"
+			}
+		}
 	}
 	"c3m3_shantytown"
 	{
@@ -282,7 +300,7 @@
 		{
 			"Elevator"
 			{
-				"min"		"30"
+				"min"		"23"
 				"max"		"36"
 			}
 		}
@@ -420,6 +438,14 @@
 		"start_dist"		"50.000000"
 		"start_extra_dist"	"0.000000"
 		"end_dist"			"50.000000"
+		"tank_ban_flow"
+		{
+			"Late Alley"
+			{
+				"min"		"58"
+				"max"		"70"
+			}
+		}
 	}
 	"c6m2_bedlam"
 	{
@@ -432,9 +458,14 @@
 		"horde_limit"		"150"
 		"tank_ban_flow"
 		{
+			"Sewer Drop"
+			{
+				"min"		"58"
+				"max"		"68"
+			}
 			"Event (bugged spawn)"
 			{
-				"min"		"74"
+				"min"		"73"
 				"max"		"100"
 			}
 		}
@@ -458,19 +489,6 @@
 		"start_dist"		"75.000000"
 		"start_extra_dist"	"0.000000"
 		"end_dist"			"50.000000"
-		"tank_ban_flow"
-		{
-			"Early to past Event"
-			{
-				"min"		"0"
-				"max"		"64"
-			}
-			"Block End"
-			{
-				"min"		"68"
-				"max"		"100"
-			}
-		}
 	}
 	"c7m2_barge"
 	{
@@ -479,12 +497,12 @@
 		"start_dist"		"75.000000"
 		"start_extra_dist"	"0.000000"
 		"end_dist"			"50.000000"
-		"max_distance"		"700"
+		"max_distance"		"600"
 		"tank_ban_flow"
 		{
 			"Event (bugged spawn)"
 			{
-				"min"		"72"
+				"min"		"70"
 				"max"		"78"
 			}
 		}
@@ -509,6 +527,19 @@
 		"start_extra_dist"	"605.247620"
 		"end_point"			"2883.220703 2962.613037 -204.742737"
 		"end_dist"			"336.442200"
+		"tank_ban_flow"
+		{
+			"One way drop"
+			{
+				"min"		"31"
+				"max"		"43"
+			}
+			"Alley"
+			{
+				"min"		"59"
+				"max"		"67"
+			}
+		}
 	}
 	"c8m2_subway"
 	{
@@ -621,6 +652,14 @@
 		"start_extra_dist"	"587.266541"
 		"end_point"			"-10784.895508 -4906.771973 318.224670"
 		"end_dist"			"403.989594"
+		"tank_ban_flow"
+		{
+			"Ladders"
+			{
+				"min"		"38"
+				"max"		"42"
+			}
+		}
 		"witch_ban_flow"
 		{
 			"Ladders"
@@ -637,6 +676,14 @@
 		"start_extra_dist"	"399.942505"
 		"end_point"			"-8339.282227 -5592.915039 0.031253"
 		"end_dist"			"322.081451"
+		"tank_ban_flow"
+		{
+			"Tunnel spawn"
+			{
+				"min"		"40"
+				"max"		"51"
+			}
+		}
 	}
 	"c10m3_ranchhouse"
 	{
@@ -658,8 +705,13 @@
 		{
 			"Start of event"
 			{
-				"min"		"68"
+				"min"		"65"
 				"max"		"75"
+			}
+			"End of event"
+			{
+				"min"		"83"
+				"max"		"100"
 			}
 		}
 	}
@@ -766,6 +818,11 @@
 		"horde_limit"		"90"
 		"tank_ban_flow"
 		{
+			"Saferoom tank"
+			{
+				"min"		"0"
+				"max"		"28"
+			}
 			"Late spawns (bugged spawn)"
 			{
 				"min"		"81"
@@ -780,16 +837,8 @@
 		"start_extra_dist"	"264.932068"
 		"end_point"			"10398.775391 -310.353424 2.031253"
 		"end_dist"			"316.505157"
-		"max_distance"		"500"
+		"max_distance"		"400"
 		"horde_limit"		"90"
-		"tank_ban_flow"
-		{
-			"Warehouse"
-			{
-				"min"		"39"
-				"max"		"54"
-			}
-		}
 	}
 	"c12m5_cornfield"
 	{
@@ -972,6 +1021,19 @@
 		"start_extra_dist"	"566.889465"
 		"end_point"			"-2013.103882 -3279.305176 144.031250"
 		"end_dist"			"276.152161"
+		"tank_ban_flow"
+		{
+			"Valley one way drop until house"
+			{
+				"min"		"34"
+				"max"		"63"
+			}
+			"Late spawns"
+			{
+				"min"		"78"
+				"max"		"100"
+			}
+		}
 	}
 	"cdta_02road"
 	{
@@ -1435,6 +1497,19 @@
 		"start_extra_dist"	"357.132141"
 		"end_point"			"2948.021729 7602.731445 -604.782043"
 		"end_dist"			"142.267410"
+		"tank_ban_flow"
+		{
+			"Early Tank awkward spawn"
+			{
+				"min"       "0"
+				"max"       "44"
+			}
+			"Alarm car to one way drop"
+			{
+				"min"		"50"
+				"max"		"75"
+			}
+		}
 	}
 	"l4d_dbd2dc_the_mall"
 	{
@@ -1453,6 +1528,14 @@
 		"end_point"			"-2060.603027 6556.208496 -671.968750"
 		"end_dist"			"286.359802"
 		"max_distance"		"700"
+		"tank_ban_flow"
+		{
+			"Early Tank awkward spawn all the way up to vent spawn"
+			{
+				"min"       "24"
+				"max"       "45"
+			}
+		}
 	}
 	"l4d_dbd2dc_undead_center"
 	{
@@ -2370,7 +2453,7 @@
 			"Early spawn"
 			{
 				"min"		"0"
-				"max"		"36"
+				"max"		"56"
 			}
 		}
 	}
@@ -2393,7 +2476,7 @@
 	"nmrm3_sewers"
 	{
 		"start_point"		"10936.943359 4650.031250 90.761696"
-		"end_point"			"12288.031250 12235.729492 78.031250"
+		"end_point"			"12629 12565 78.031250"
 		"start_dist"		"50.000000"
 		"start_extra_dist"	"0.000000"
 		"end_dist"			"75.000000"
@@ -2402,15 +2485,15 @@
 			"Early spawn"
 			{
 				"min"		"0"
-				"max"		"26"
+				"max"		"31"
 			}
 		}
 	}
 	"nmrm4_hospital"
 	{
-		"start_point"		"12297.031250 12247.379883 16.031250"
+		"start_point"		"12629 12565 78.031250"
 		"start_dist"		"165.464249"
-		"start_extra_dist"	"409.338440"
+		"start_extra_dist"	"250"
 		"end_point"			"11459.563477 15087.968750 5565.974609"
 		"end_dist"			"332.486664"
 		"tank_ban_flow"
@@ -2422,8 +2505,8 @@
 			}
 			"Elevator"
 			{
-				"min"		"40"
-				"max"		"68"
+				"min"		"36"
+				"max"		"72"
 			}
 		}
 	}
@@ -2450,6 +2533,162 @@
 				"min"		"76"
 				"max"		"100"
 			}
+		}
+	}
+	"noecho_m1"
+	{
+		"tank_ban_flow"
+		{
+			"early"
+			{
+				"min" "0"
+				"max" "33"
+			}
+			"late"
+			{
+				"min" "60"
+				"max" "100"
+			}
+		}
+	}
+	"noecho_m2"
+	{
+		"tank_ban_flow"
+		{
+			"early"
+			{
+				"min" "0"
+				"max" "33"
+			}
+		}
+		"ItemLimits"
+		{
+			"pain_pills" "3"
+		}
+	}
+	"noecho_m3"
+	{
+		"horde_limit" "80"
+		"tank_ban_flow"
+		{
+			"early"
+			{
+				"min" "0"
+				"max" "33"
+			}
+			"late"
+			{
+				"min" "70"
+				"max" "100"
+			}
+		}
+		"ItemLimits"
+		{
+			"pain_pills" "3"
+		}
+	}
+	"noecho_m4"
+	{
+		"ItemLimits"
+		{
+			"pain_pills" "5"
+		}
+	}
+	"pr1_waterfront_f"
+	{
+		"start_point"		"735.921692 730.683960 -437.968750"
+		"end_point"			"-4333.118164 -1132.782837 -281.968750"
+		"start_dist"		"75.000000"
+		"start_extra_dist"	"0.000000"
+		"end_dist"			"250.000000"
+	}
+	"pr2_park_f"
+	{
+		"start_point"		"-4333.118164 -1132.782837 -281.968750"
+		"end_point"			"-6024.643555 -8038.492676 -185.968750"
+		"start_dist"		"75.000000"
+		"start_extra_dist"	"0.000000"
+		"end_dist"			"250.000000"
+	}
+	"pr3_highway_f"
+	{
+		"start_point"       "10383.161133 8264.652344 87.791550"
+		"end_point"         "7953.651367 -4068.622070 217.136597"
+		"start_dist"		"250.000000"
+		"start_extra_dist"	"0.000000"
+		"end_dist"			"50.000000"
+		"tank_ban_flow"
+		{
+			"Unfair spawn"
+			{
+				"min"		"27"
+				"max"		"37"
+			}
+		}
+	}
+	"pr4_quarter_f"
+	{
+		"start_point"       "-2379.359863 10833.366211 409.579590"
+		"end_point"         "-3739.969238 -63.853954 126.031250"
+		"start_dist"		"50.000000"
+		"start_extra_dist"	"0.000000"
+		"end_dist"			"150.000000"
+		"tank_ban_flow"
+		{
+			"Unfair spawn"
+			{
+				"min"		"55"
+				"max"		"63"
+			}
+		}
+	}
+	"pr5_bridge_f"
+	{
+		"start_point"       "-11323.872070 -1008.784912 197.848251"
+		"end_point"         "1438.854370 -6413.000000 266.521240"
+		"start_dist"		"50.000000"
+		"start_extra_dist"	"0.000000"
+		"end_dist"			"50.000000"
+	}
+	"tripday_new_m2"
+	{
+		"tank_ban_flow"
+		{
+			"cornfield"
+			{
+				"min"		"45"
+				"max"		"64"
+			}
+		}
+	}
+	"tripday_new_m3"
+	{
+		"tank_ban_flow"
+		{
+			"near_building"
+			{
+				"min"		"72"
+				"max"		"100"
+			}
+		}
+		"ItemLimits"
+		{
+			"pain_pills"	"3"
+		}
+	}
+	"tripday_new_m4"
+	{
+		"tank_ban_flow"
+		{
+			"early"
+			{
+				"min"        "0"
+				"max"        "32"
+			}
+		}
+		"ItemLimits"
+		{
+			"pain_pills"    "5"
 		}
 	}
 }
