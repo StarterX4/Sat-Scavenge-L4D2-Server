@@ -2,7 +2,7 @@
 * text=auto
 
 *.vpk   -text
-*.smx   -text
+*.smx   -text merge=theirs
 
 # Custom for Visual Studio
 *.cs     diff=csharp
