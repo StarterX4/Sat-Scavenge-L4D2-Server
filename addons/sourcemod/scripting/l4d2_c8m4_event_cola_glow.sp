@@ -8,7 +8,8 @@
 
 #define C8M4_EVENT_ID              	3
 #define C8M4_COLA_BOTTLES			"cola_bottles"
-#define C8M4_COLA_BOTTLES_GLOW_COLOR	{220, 60, 120}
+//#define C8M4_COLA_BOTTLES_GLOW_COLOR	{220, 60, 120} //red
+#define C8M4_COLA_BOTTLES_GLOW_COLOR	{255, 153, 0}
 
 new Handle:hComplexEventMapTrie = INVALID_HANDLE;
 new iComplexEventID;
