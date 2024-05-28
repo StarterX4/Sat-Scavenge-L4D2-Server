@@ -20,7 +20,7 @@ public Plugin:myinfo =
 
 public OnPluginStart()
 {
-	CreateConVar("l4d_smokeit_version", PLUGIN_VERSION, "Version of Smoke It plugin", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
+	CreateConVar("l4d_smokeit_version", PLUGIN_VERSION, "Version of Smoke It plugin", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
 	new Handle:h_SmokersSpeed = CreateConVar("l4d_smokeit_speed", "0.42", "Smoker's speed modifier", CVAR_FLAGS);
 	new Handle:h_TongueMaxStretch = CreateConVar("l4d_smokeit_tongue_stretch", "950", "Smoker's max tongue stretch (tongue will be released if beyond this)", CVAR_FLAGS);
 	f_SmokersSpeed = GetConVarFloat(h_SmokersSpeed);
