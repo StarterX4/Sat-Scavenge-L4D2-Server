@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 #pragma semicolon 1
-#define CVAR_FLAGS FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_NOTIFY
+#define CVAR_FLAGS FCVAR_SPONLY|FCVAR_NOTIFY
 
 new Float:f_SmokersSpeed;
 new bool:Grabbed[MAXPLAYERS+1];
